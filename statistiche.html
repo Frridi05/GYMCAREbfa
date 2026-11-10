@@ -1,0 +1,113 @@
+<!doctype html>
+<html lang="it"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex,nofollow"><title>Statistiche — GymCare</title><link rel="icon" type="image/png" href="favicon.png">
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;700&family=Space+Grotesk:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="richieste.css">
+<style>
+main.st{display:block;max-width:1280px;padding-top:20px}
+.bar{display:flex;gap:12px;flex-wrap:wrap;align-items:center;justify-content:space-between;margin-bottom:18px}.bar h1{font-size:clamp(34px,5vw,56px)}
+.tools{display:flex;gap:10px;flex-wrap:wrap;align-items:center}.tools select{width:auto;padding:11px 12px}.btn{min-height:46px;padding:0 18px;font-size:14px}
+.demo{background:#fff6d6;border-left:4px solid #e0a800;padding:12px 16px;margin-bottom:18px;font-size:14px;font-weight:700}
+.kpi{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px;margin-bottom:18px}@media(max-width:700px){.kpi{grid-template-columns:repeat(2,minmax(0,1fr))}.k b{font-size:34px}}
+.k{background:#fff;border:1px solid var(--line);padding:16px}.k small{font-weight:700;font-size:12px;text-transform:uppercase;letter-spacing:.05em;color:rgb(9 10 11/.62)}
+.k b{display:block;font:700 40px/1.1 var(--disp);margin:6px 0 2px}.k span{font-size:13px;font-weight:700}.up{color:#0a7a3d}.dn{color:#c0341d}.fl{color:rgb(9 10 11/.5)}
+.g{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:18px}.g>.card{padding:20px;min-width:0}
+.c12{grid-column:span 12}.c8{grid-column:span 8}.c6{grid-column:span 6}.c4{grid-column:span 4}
+@media(max-width:900px){.c8,.c6,.c4{grid-column:span 12}}
+.card h2{font:700 14px var(--sans);text-transform:uppercase;letter-spacing:.06em;margin:0 0 14px}.cv{position:relative;height:290px}
+.hm{display:grid;grid-template-columns:34px repeat(24,minmax(0,1fr));gap:2px;font-size:10px;align-items:center}.hm .hc{height:22px}.hm em{font-style:normal;text-align:center}
+.fn div{margin:10px 0}.fn p{margin:0 0 4px;font-weight:700;font-size:14px;display:flex;justify-content:space-between}.fn s{display:block;height:26px;background:var(--acc);text-decoration:none}
+.tw{overflow-x:auto}.tb{width:100%;border-collapse:collapse;font-size:14px}.tb th,.tb td{padding:9px 8px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}.tb th{font-size:12px;text-transform:uppercase;color:rgb(9 10 11/.6)}
+.j span{display:inline-block;padding:2px 8px;border:1px solid #b9c4cb;margin:2px 3px 2px 0;font-size:12px;white-space:nowrap}.j .l{background:var(--acc);border-color:var(--ink);font-weight:700}
+.msg{font-size:14px;margin:10px 0 0}.msg.e{color:#c0341d;font-weight:700}
+#login{max-width:520px;margin:40px auto}#login form{display:grid;grid-template-columns:1fr;gap:14px}
+</style></head><body>
+<header><a href="index.html" aria-label="GymCare, torna alla home"><img src="logo.png" alt="GymCare" width="904" height="287"></a><div class="l"><a href="index.html">← Home</a></div></header>
+<main class="st">
+<section class="card" id="login"><h1 style="font-size:40px">Statistiche</h1><p>Area riservata. Inserisci la password scelta nello script Google.</p>
+<form id="lf"><div class="f"><label for="pw">Password</label><input id="pw" type="password" autocomplete="current-password" required></div><button class="btn" type="submit">Entra</button><button class="btn o" type="button" id="dm">Vedi dati di esempio</button></form><p class="msg" id="lm" role="alert"></p></section>
+<div id="app" hidden>
+<div class="bar"><h1>Statistiche</h1><div class="tools"><label for="per" class="sr">Periodo</label><select id="per"><option value="1">Oggi</option><option value="7">Ultimi 7 giorni</option><option value="30" selected>Ultimi 30 giorni</option><option value="90">Ultimi 90 giorni</option></select><button class="btn o" id="csv" type="button">Esporta CSV</button><button class="btn o" id="out" type="button">Esci</button></div></div>
+<div class="demo" id="dn" hidden>DATI DI ESEMPIO: non sono visite reali. Servono solo per vedere come appare la pagina.</div>
+<div class="kpi" id="kpi"></div>
+<div class="g">
+<section class="card c8"><h2>Traffico nel tempo</h2><div class="cv"><canvas id="ch1" role="img" aria-label="Visitatori, sessioni e richieste nel tempo"></canvas></div></section>
+<section class="card c4"><h2>Da dove arrivano</h2><div class="cv"><canvas id="ch2" role="img" aria-label="Sessioni per canale"></canvas></div></section>
+<section class="card c4"><h2>Dispositivi</h2><div class="cv"><canvas id="ch3" role="img" aria-label="Sessioni per dispositivo"></canvas></div></section>
+<section class="card c4"><h2>Nuovi e ricorrenti</h2><div class="cv"><canvas id="ch4" role="img" aria-label="Visitatori nuovi e ricorrenti"></canvas></div></section>
+<section class="card c4"><h2>Pagine più viste</h2><div class="cv"><canvas id="ch5" role="img" aria-label="Pagine più viste"></canvas></div></section>
+<section class="card c8"><h2>Quando arrivano (giorno e ora)</h2><div class="hm" id="hm" role="img" aria-label="Mappa di calore delle sessioni per giorno e ora"></div></section>
+<section class="card c4"><h2>Dalla visita alla richiesta</h2><div class="fn" id="fn"></div></section>
+<section class="card c6"><h2>Campagne e sorgenti</h2><div class="tw"><table class="tb" id="cm"></table></div></section>
+<section class="card c6"><h2>Percorsi più frequenti</h2><div class="tw"><table class="tb" id="pa"></table></div></section>
+<section class="card c12"><h2>Ultime sessioni (anonime)</h2><div class="tw"><table class="tb" id="se"></table></div></section>
+</div>
+<p class="msg">Conta solo chi accetta i cookie di misurazione: i numeri sono un campione, non tutte le visite. Non include le tue visite da questo browser.</p>
+</div></main>
+<script src="config.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.js"></script>
+<script>
+(()=>{
+const $=s=>document.querySelector(s),fmt=n=>Math.round(n*10)/10===Math.round(n)?Math.round(n).toLocaleString("it-IT"):n.toLocaleString("it-IT",{maximumFractionDigits:1});
+const PG={home:"Home",appuntamento:"Appuntamento",informazioni:"Informazioni",preventivo:"Preventivo",registrazione:"Registrazione",ricontatto:"Ricontatto",privacy:"Privacy"},FORMS=["appuntamento","informazioni","preventivo","registrazione","ricontatto"];
+const CH=["Google Ads","Ricerca Google","Social","Diretto","Altri siti"],COL=["#02d2e3","#0e0f14","#00a3b0","#9aa7ae","#d6dde1"],GG=["Lun","Mar","Mer","Gio","Ven","Sab","Dom"];
+let ALL=[],DEMO=false,PW="",charts={};
+const chan=r=>{const h=String(r[5]||r[6]||"").toLowerCase();if(r[9]=="1"||/cpc|paid|ppc/i.test(r[7]))return 0;if(/google|bing|duckduckgo|ecosia/.test(h))return 1;if(/facebook|instagram|fb\.|linkedin|tiktok|youtube|whatsapp|^t\.co/.test(h)||/social/i.test(r[7]))return 2;return h?4:3};
+function build(rows){const S=new Map();rows=rows.slice().sort((a,b)=>a[0]-b[0]);for(const r of rows){let s=S.get(r[2]);if(!s){s={vid:r[1],t0:+r[0],ch:chan(r),dev:r[10]||"desktop",uc:r[8],pages:[],lead:0,call:0,wa:0};S.set(r[2],s)}
+ if(r[3]=="pv")s.pages.push(r[4]);else if(r[3]=="lead")s.lead++;else if(r[3]=="call")s.call++;else if(r[3]=="wa")s.wa++}return[...S.values()]}
+const K=(S)=>{const pv=S.reduce((a,s)=>a+s.pages.length,0),ls=S.filter(s=>s.lead).length;return{vis:new Set(S.map(s=>s.vid)).size,ses:S.length,pv,leads:S.reduce((a,s)=>a+s.lead,0),call:S.reduce((a,s)=>a+s.call,0),wa:S.reduce((a,s)=>a+s.wa,0),conv:S.length?ls/S.length*100:0,pps:S.length?pv/S.length:0}};
+const mk=(id,cfg)=>{charts[id]&&charts[id].destroy();if(!window.Chart){$("#"+id).parentNode.innerHTML="<p class='msg e'>Grafici non disponibili: libreria non caricata.</p>";return}charts[id]=new Chart($("#"+id),cfg)};
+function render(){
+ const days=+$("#per").value,now=Date.now(),t=new Date();t.setHours(0,0,0,0);const start=days==1?t.getTime():now-days*864e5,pstart=start-(now-start);
+ const cur=build(ALL.filter(r=>r[0]>=start)),prev=build(ALL.filter(r=>r[0]>=pstart&&r[0]<start)),a=K(cur),b=K(prev);
+ const items=[["Visitatori unici","vis"],["Sessioni","ses"],["Pagine viste","pv"],["Richieste inviate","leads"],["Conversione %","conv"],["Clic Chiama","call"],["Clic WhatsApp","wa"],["Pagine / sessione","pps"]];
+ $("#kpi").innerHTML=items.map(([l,k])=>{const d=b[k]?(a[k]-b[k])/b[k]*100:null,c=d===null?"fl":d>=0?"up":"dn";return`<div class="k"><small>${l}</small><b>${fmt(a[k])}${k=="conv"?"%":""}</b><span class="${c}">${d===null?"nessun confronto":(d>=0?"▲ ":"▼ ")+fmt(Math.abs(d))+"% vs periodo prec."}</span></div>`}).join("");
+ Chart.defaults.font.family='"Space Grotesk",system-ui,sans-serif';Chart.defaults.font.size=13;Chart.defaults.color="#090a0b";
+ // serie temporale
+ const hourly=days==1,key=ms=>{const d=new Date(ms);return hourly?d.getHours():d.getFullYear()+"-"+(d.getMonth()+1)+"-"+d.getDate()};
+ const keys=[],lab=[];if(hourly)for(let h=0;h<24;h++){keys.push(h);lab.push(h+":00")}else for(let d=days-1;d>=0;d--){const x=new Date(now-d*864e5);keys.push(key(x));lab.push(x.toLocaleDateString("it-IT",{day:"numeric",month:"short"}))}
+ const vi=keys.map(()=>new Set),se=keys.map(()=>0),le=keys.map(()=>0);cur.forEach(s=>{const i=keys.indexOf(key(s.t0));if(i<0)return;vi[i].add(s.vid);se[i]++;le[i]+=s.lead});
+ mk("ch1",{data:{labels:lab,datasets:[{type:"bar",label:"Richieste",data:le,backgroundColor:"#0e0f14",yAxisID:"y2",order:2},{type:"line",label:"Sessioni",data:se,borderColor:"#00a3b0",backgroundColor:"rgba(2,210,227,.18)",fill:true,tension:.3,pointRadius:0,order:1},{type:"line",label:"Visitatori",data:vi.map(s=>s.size),borderColor:"#02d2e3",tension:.3,pointRadius:0,borderWidth:3,order:0}]},options:{maintainAspectRatio:false,interaction:{mode:"index",intersect:false},scales:{y:{beginAtZero:true,ticks:{precision:0}},y2:{position:"right",beginAtZero:true,grid:{display:false},ticks:{precision:0},title:{display:true,text:"Richieste"}},x:{ticks:{maxTicksLimit:10}}}}});
+ const cnt=(arr,n)=>{const o=Array(n).fill(0);arr.forEach(i=>o[i]++);return o};
+ const dn={data:{labels:CH,datasets:[{data:cnt(cur.map(s=>s.ch),5),backgroundColor:COL,borderColor:"#fff"}]},type:"doughnut",options:{maintainAspectRatio:false,cutout:"58%",plugins:{legend:{position:"bottom"}}}};
+ mk("ch2",{...dn,type:"doughnut"});
+ const DV=["mobile","desktop","tablet"];mk("ch3",{type:"doughnut",data:{labels:["Telefono","Computer","Tablet"],datasets:[{data:cnt(cur.map(s=>Math.max(0,DV.indexOf(s.dev))),3),backgroundColor:["#02d2e3","#0e0f14","#9aa7ae"],borderColor:"#fff"}]},options:{maintainAspectRatio:false,cutout:"58%",plugins:{legend:{position:"bottom"}}}});
+ const vc={};cur.forEach(s=>vc[s.vid]=(vc[s.vid]||0)+1);const ric=Object.values(vc).filter(n=>n>1).length;
+ mk("ch4",{type:"doughnut",data:{labels:["Nuovi","Ricorrenti"],datasets:[{data:[Object.keys(vc).length-ric,ric],backgroundColor:["#02d2e3","#0e0f14"],borderColor:"#fff"}]},options:{maintainAspectRatio:false,cutout:"58%",plugins:{legend:{position:"bottom"}}}});
+ const pc={};cur.forEach(s=>s.pages.forEach(p=>pc[p]=(pc[p]||0)+1));const tp=Object.entries(pc).sort((x,y)=>y[1]-x[1]).slice(0,7);
+ mk("ch5",{type:"bar",data:{labels:tp.map(x=>PG[x[0]]||x[0]),datasets:[{data:tp.map(x=>x[1]),backgroundColor:"#02d2e3"}]},options:{indexAxis:"y",maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{ticks:{precision:0}}}}});
+ // heatmap
+ const hm=Array.from({length:7},()=>Array(24).fill(0));cur.forEach(s=>{const d=new Date(s.t0);hm[(d.getDay()+6)%7][d.getHours()]++});const mx=Math.max(1,...hm.flat());
+ $("#hm").innerHTML="<span></span>"+[...Array(24).keys()].map(h=>`<em>${h%3?"":h}</em>`).join("")+hm.map((r,i)=>`<em>${GG[i]}</em>`+r.map((n,h)=>`<div class="hc" title="${GG[i]} ${h}:00 — ${n} sessioni" style="background:rgba(2,210,227,${n?.12+.88*n/mx:.05})"></div>`).join("")).join("");
+ // funnel
+ const fo=cur.filter(s=>s.pages.some(p=>FORMS.includes(p))).length,fl=cur.filter(s=>s.lead).length,top=Math.max(1,cur.length);
+ $("#fn").innerHTML=[["Sessioni",cur.length],["Hanno aperto un modulo",fo],["Hanno inviato una richiesta",fl]].map(([l,n])=>`<div><p><span>${l}</span><span>${n}</span></p><s style="width:${Math.max(2,n/top*100)}%"></s></div>`).join("")+`<p class="msg">Contatti diretti: ${a.call} clic su Chiama, ${a.wa} su WhatsApp.</p>`;
+ // campagne
+ const cg={};cur.forEach(s=>{const k=s.uc||CH[s.ch];cg[k]=cg[k]||{n:0,l:0};cg[k].n++;if(s.lead)cg[k].l++});
+ $("#cm").innerHTML="<tr><th>Campagna / canale</th><th>Sessioni</th><th>Richieste</th><th>Conv.</th></tr>"+Object.entries(cg).sort((x,y)=>y[1].n-x[1].n).slice(0,8).map(([k,v])=>`<tr><td>${esc(k)}</td><td>${v.n}</td><td>${v.l}</td><td>${fmt(v.l/v.n*100)}%</td></tr>`).join("");
+ // percorsi
+ const jr=s=>[...s.pages.filter((p,i,x)=>p!=x[i-1]).map(p=>PG[p]||p),...(s.lead?["✓ richiesta"]:[]),...(s.call?["chiamata"]:[]),...(s.wa?["WhatsApp"]:[])];
+ const pj={};cur.forEach(s=>{const k=jr(s).join(" → ");if(k)pj[k]=(pj[k]||0)+1});
+ $("#pa").innerHTML="<tr><th>Percorso</th><th>Sessioni</th></tr>"+Object.entries(pj).sort((x,y)=>y[1]-x[1]).slice(0,8).map(([k,n])=>`<tr><td>${esc(k)}</td><td>${n}</td></tr>`).join("");
+ $("#se").innerHTML="<tr><th>Quando</th><th>Provenienza</th><th>Dispositivo</th><th>Percorso</th></tr>"+cur.slice().sort((x,y)=>y.t0-x.t0).slice(0,15).map(s=>`<tr><td>${new Date(s.t0).toLocaleString("it-IT",{day:"2-digit",month:"2-digit",hour:"2-digit",minute:"2-digit"})}</td><td>${CH[s.ch]}${s.uc?" · "+esc(s.uc):""}</td><td>${{mobile:"Telefono",desktop:"Computer",tablet:"Tablet"}[s.dev]||s.dev}</td><td class="j">${jr(s).map(x=>`<span${/✓/.test(x)?' class="l"':""}>${esc(x)}</span>`).join("")}</td></tr>`).join("");
+}
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+function demo(){const R=[],now=Date.now();let sd=7;const rnd=()=>(sd=(sd*16807)%2147483647)/2147483647,pool=[...Array(240)].map((_,i)=>"d"+i);
+ for(let d=119;d>=0;d--){const day=new Date(now-d*864e5),wd=(day.getDay()+6)%7,n=Math.round((5+(120-d)*.12)*(wd>4?.55:1)*(.7+rnd()*.7));
+  for(let i=0;i<n;i++){const h=Math.floor(8+rnd()*rnd()*12+ (rnd()<.3?4:0));const ts=new Date(day.getFullYear(),day.getMonth(),day.getDate(),Math.min(h,23),Math.floor(rnd()*60)).getTime();if(ts>now)continue;
+   const vid=pool[Math.floor(rnd()*rnd()*pool.length)],sid="d"+d+"-"+i,c=rnd(),src=c<.36?["google.com","google","cpc",rnd()<.6?"palestre-toscana":"manutenzione-fitness","1"]:c<.62?["google.com","","","",""]:c<.76?["l.instagram.com","instagram","social","",""]:c<.93?["","","","",""]:["facebook.com","","","",""],dev=rnd()<.68?"mobile":rnd()<.88?"desktop":"tablet";
+   const ev=(t,p,k,x)=>R.push([ts+k*25000,vid,sid,t,p,src[0],src[1],src[2],src[3],src[4],dev,x||""]);
+   let k=0,page=rnd()<.7?"home":(rnd()<.6?"preventivo":"appuntamento");ev("pv",page,k++);let form=FORMS.includes(page);
+   if(page=="home"&&rnd()<.5){page=["preventivo","appuntamento","ricontatto","informazioni","registrazione"][Math.floor(rnd()*5)];ev("pv",page,k++);form=true}
+   if(rnd()<.06){ev("call","home",k++)}if(rnd()<.07)ev("wa","home",k++);if(form&&rnd()<.2)ev("lead",page,k++,page)}}
+ return R}
+async function enter(rows,isDemo){ALL=rows;DEMO=isDemo;$("#login").hidden=true;$("#app").hidden=false;$("#dn").hidden=!isDemo;if(!isDemo)try{localStorage.gc_owner="1"}catch(_){}render()}
+$("#lf").addEventListener("submit",async e=>{e.preventDefault();const m=$("#lm");m.className="msg";m.textContent="";const u=(window.GC||{}).track;
+ if(!u){m.className="msg e";m.textContent="Collegamento non ancora impostato: apri config.js e incolla l’URL dello script Google.";return}
+ try{PW=$("#pw").value;const r=await fetch(u+"?key="+encodeURIComponent(PW)+"&days=120"),j=await r.json();if(j.error)throw new Error(j.error==="auth"?"Password non corretta.":j.error);sessionStorage.gc_pw=PW;await enter(j.rows||[],false)}
+ catch(x){m.className="msg e";m.textContent=x.message==="Failed to fetch"?"Non riesco a collegarmi allo script Google. Controlla l’URL in config.js.":x.message}});
+$("#dm").onclick=()=>enter(demo(),true);$("#per").onchange=render;$("#out").onclick=()=>{sessionStorage.removeItem("gc_pw");location.reload()};
+$("#csv").onclick=()=>{const rows=ALL.filter(r=>r[0]>=Date.now()-(+$("#per").value)*864e5),h="ts,visitatore,sessione,tipo,pagina,provenienza,utm_source,utm_medium,utm_campaign,gclid,dispositivo,extra",csv=[h,...rows.map(r=>r.map(v=>'"'+String(v).replace(/"/g,'""')+'"').join(","))].join("\n"),a=document.createElement("a");a.href=URL.createObjectURL(new Blob([csv],{type:"text/csv"}));a.download="statistiche-gymcare.csv";a.click()};
+if(sessionStorage.gc_pw&&(window.GC||{}).track){$("#pw").value=sessionStorage.gc_pw;$("#lf").requestSubmit()}
+})();
+</script></body></html>
