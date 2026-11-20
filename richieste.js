@@ -11,7 +11,7 @@ const pairs=fd=>{const out=[],seen=new Set();for(const k of fd.keys()){if(seen.h
 const tipo=()=>f.querySelector("[name=tipo_richiesta]").value;
 f.addEventListener("submit",async e=>{
  e.preventDefault();err.hidden=true;
- for(const i of f.querySelectorAll("[data-date]")){if(i.value&&new Date(i.value+"T12:00").getDay()===0)i.setCustomValidity("La domenica non siamo operativi: scegli un altro giorno.");else i.setCustomValidity("")}
+ for(const i of f.querySelectorAll("[data-date]")){if(i.value&&new Date(i.value+"T12:00").getDay()===0)i.setCustomValidity("La domenica facciamo solo pronto intervento: chiamaci al 388 305 3433 o scegli un altro giorno.");else i.setCustomValidity("")}
  const ck=f.querySelector("[data-one]");if(ck){const any=ck.querySelector("input:checked");ck.querySelector("input").setCustomValidity(any?"":"Seleziona almeno una voce.");ck.querySelectorAll("input").forEach(i=>i.onchange=()=>ck.querySelector("input").setCustomValidity(""))}
  if(!f.reportValidity())return;
  const r=ref();f.querySelector("[name=riferimento]").value=r;
