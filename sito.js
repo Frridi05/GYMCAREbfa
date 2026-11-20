@@ -3,9 +3,17 @@ const GA="G-DQXE5RQ8M1",TEL="+393883053433",KEY="gc_consent";
 const get=()=>{try{return localStorage.getItem(KEY)}catch(_){return null}},set=v=>{try{localStorage.setItem(KEY,v)}catch(_){}};
 window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}window.gtag=gtag;
 const st=v=>({ad_storage:v,analytics_storage:v,ad_user_data:v,ad_personalization:v});
-gtag("consent","default",Object.assign(st(get()==="ok"?"granted":"denied"),{wait_for_update:500}));
-const s=document.createElement("script");s.async=true;s.src="https://www.googletagmanager.com/gtag/js?id="+GA;document.head.append(s);
-gtag("js",new Date());gtag("config",GA);
+gtag("consent","default",st("denied"));
+/* Google Analytics e Metricool si caricano SOLO dopo "Accetta" */
+let on=false;
+const start=()=>{if(on)return;on=true;
+ gtag("consent","update",st("granted"));
+ const s=document.createElement("script");s.async=true;s.src="https://www.googletagmanager.com/gtag/js?id="+GA;document.head.append(s);
+ gtag("js",new Date());gtag("config",GA);
+ const m=document.createElement("script");m.async=true;m.src="https://tracker.metricool.com/resources/be.js";
+ m.onload=()=>{try{beTracker.t({hash:"14f0bb9e0d26154dae464a17d2c008a8"})}catch(_){}};document.head.append(m);
+};
+if(get()==="ok")start();
 window.gcLead=t=>gtag("event","generate_lead",{form_name:t});
 document.addEventListener("click",e=>{const a=e.target.closest("a");if(!a)return;const h=a.getAttribute("href")||"";
  if(h.startsWith("tel:"))gtag("event","click_to_call");else if(h.includes("wa.me"))gtag("event","click_whatsapp");
@@ -28,8 +36,8 @@ const st2=document.createElement("style");st2.textContent=css;document.head.appe
 function banner(force){
  if(!force&&get())return;document.querySelector(".gcb")?.remove();
  const d=document.createElement("div");d.className="gcb";d.setAttribute("role","dialog");d.setAttribute("aria-label","Cookie");
- d.innerHTML='<p>Usiamo cookie di misurazione (Google Analytics) per capire come viene usato il sito, solo se sei d’accordo. Puoi cambiare idea quando vuoi. <a href="privacy.html#cookie">Informativa</a></p><div><button type="button" data-v="ok">Accetta</button><button type="button" class="n" data-v="no">Rifiuta</button></div>';
- d.addEventListener("click",e=>{const v=e.target.dataset&&e.target.dataset.v;if(!v)return;set(v);gtag("consent","update",st(v==="ok"?"granted":"denied"));d.remove()});
+ d.innerHTML='<p>Usiamo strumenti di misurazione (Google Analytics e Metricool) per capire come viene usato il sito, solo se sei d’accordo. Puoi cambiare idea quando vuoi. <a href="privacy.html#cookie">Informativa</a></p><div><button type="button" data-v="ok">Accetta</button><button type="button" class="n" data-v="no">Rifiuta</button></div>';
+ d.addEventListener("click",e=>{const v=e.target.dataset&&e.target.dataset.v;if(!v)return;const was=get();set(v);d.remove();if(v==="ok")start();else if(was==="ok"){gtag("consent","update",st("denied"));location.reload()}});
  document.body.append(d);
 }
 function bar(){
