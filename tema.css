@@ -1,0 +1,22 @@
+/* Modalità notte / chiara — GymCare */
+.tt{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-width:48px;height:48px;padding:0 12px;border:2px solid var(--fg);background:transparent;color:var(--fg);cursor:pointer;font:700 14px "Space Grotesk",system-ui,sans-serif;text-transform:uppercase}
+.tt svg{width:22px;height:22px;flex:none}.tt .ts{display:none}
+html[data-theme=dark] .tt .tm{display:none}html[data-theme=dark] .tt .ts{display:block}
+.tt:focus-visible{outline:3px solid var(--acc);outline-offset:2px}
+.hr{display:flex;align-items:center;gap:14px}
+@media(max-width:600px){.tt b{display:none}}
+html[data-theme=dark]{color-scheme:dark;--bg:#14161c;--fg:#eef2f4;--line:#2a2d36;--mute:rgb(238 242 244/.45)}
+html[data-theme=dark] header img{background:#fff;padding:6px 10px;border-radius:4px}
+/* home */
+html[data-theme=dark] .id{color:rgb(238 242 244/.65)!important}
+html[data-theme=dark] .mq li,html[data-theme=dark] .rvc{background:#1c1f27;border-color:#2a2d36}
+html[data-theme=dark] .mq .nt,html[data-theme=dark] .rvc figcaption{color:rgba(238,242,244,.65)}
+html[data-theme=dark] #marche{border-top-color:#2a2d36!important}
+/* pagine modulo */
+html[data-theme=dark] .tabs a{color:rgb(238 242 244/.6)}
+html[data-theme=dark] .card{background:#1c1f27}
+html[data-theme=dark] input,html[data-theme=dark] select,html[data-theme=dark] textarea,html[data-theme=dark] .opt{border-color:#3a3e4a}
+html[data-theme=dark] .opt:has(input:checked){border-color:var(--acc);background:#0f2f33}
+html[data-theme=dark] .hint,html[data-theme=dark] details{color:rgb(238 242 244/.7)}
+html[data-theme=dark] .btn.o:hover{color:var(--bg)}
+html[data-theme=dark] .err{background:#3a1f1a}

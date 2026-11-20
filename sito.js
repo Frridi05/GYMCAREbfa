@@ -46,6 +46,16 @@ function bar(){
  q.innerHTML='<a href="tel:'+TEL+'"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M6.6 10.8a15 15 0 006.6 6.6l2.2-2.2c.3-.3.7-.4 1-.2 1.1.4 2.3.6 3.6.6.6 0 1 .4 1 1V20c0 .6-.4 1-1 1C10.6 21 3 13.4 3 4c0-.6.4-1 1-1h3.5c.6 0 1 .4 1 1 0 1.300.2 2.500.6 3.600.1.3 0 .7-.2 1l-2.300 2.200z"/></svg>Chiama<span class="d">388 305 3433</span></a><a href="https://wa.me/393883053433">WhatsApp</a>'+(pv?'':'<a href="preventivo.html">Preventivo</a>');
  document.body.append(q);
 }
-const go=()=>{bar();banner(false)};
+function tema(){
+ const h=document.querySelector("header");if(!h||h.querySelector(".tt"))return;
+ const b=document.createElement("button");b.type="button";b.className="tt";
+ b.innerHTML='<svg class="tm" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M21 12.8A9 9 0 1111.2 3a7 7 0 009.8 9.8z"/></svg><svg class="ts" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="4.5"/><path d="M12 1.5v3M12 19.5v3M1.5 12h3M19.5 12h3M4.6 4.6l2.1 2.1M17.3 17.3l2.1 2.1M4.6 19.4l2.1-2.1M17.3 6.7l2.1-2.1"/></svg><b></b>';
+ const lab=()=>{const d=document.documentElement.dataset.theme==="dark";b.querySelector("b").textContent=d?"Chiaro":"Notte";b.setAttribute("aria-label",d?"Passa alla modalità chiara":"Passa alla modalità notte");b.setAttribute("aria-pressed",d)};
+ b.addEventListener("click",()=>{const n=document.documentElement.dataset.theme==="dark"?"light":"dark";document.documentElement.dataset.theme=n;try{localStorage.setItem("gc_theme",n)}catch(_){}lab()});
+ lab();
+ const kids=[...h.children].slice(1).filter(e=>e.tagName!=="NAV");
+ const r=document.createElement("div");r.className="hr";r.append(b,...kids);h.append(r);
+}
+const go=()=>{tema();bar();banner(false)};
 document.readyState==="loading"?document.addEventListener("DOMContentLoaded",go):go();
 })();
